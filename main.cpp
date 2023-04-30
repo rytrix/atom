@@ -1,7 +1,6 @@
 #include "semaphore.hpp"
 #include "fence.hpp"
 #include "threadpool.hpp"
-#include <unistd.h>
 
 void test_semaphore(atom::pool& threadpool) {
     atom::semaphore semaphore(1); 
