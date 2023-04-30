@@ -2,17 +2,26 @@
 #define _ATOM_SEMAPHORE_CPP
 
 #include "semaphore.hpp"
+#include <mutex>
 
 namespace atom {
 
 semaphore::semaphore(int value)
-    : m_value(value)
+    : m_value(value), m_default(value)
 {}
 
-semaphore::~semaphore() = default;
+semaphore::~semaphore() {
+    wait_complete();
+}
+
+void semaphore::wait_complete() {
+    auto condition = [this](){return m_value == m_default;};
+    std::unique_lock<std::mutex> lock(m_mutex);
+    m_cond.wait(lock,condition);
+}
 
 semaphore::handle semaphore::wait() {
-    auto condition = [&](){return m_value != 0;};
+    auto condition = [this](){return m_value != 0;};
 
     std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -27,7 +36,7 @@ semaphore::handle semaphore::wait(double seconds) {
     std::chrono::duration<double> secs(seconds);
     auto timeout = std::chrono::duration_cast<std::chrono::milliseconds>(secs);
 
-    auto condition = [&](){return m_value != 0;};
+    auto condition = [this](){return m_value != 0;};
     std::unique_lock<std::mutex> lock(m_mutex);
     if (m_cond.wait_for(lock,timeout,condition) == false) {
         return {nullptr};
@@ -56,8 +65,8 @@ void semaphore::handle::post() {
     {
         std::lock_guard<std::mutex> lock(sem->m_mutex);
         sem->m_value++;
+        sem->m_cond.notify_all();
     }
-    sem->m_cond.notify_all();
     sem = nullptr;
 }
 

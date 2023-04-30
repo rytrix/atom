@@ -28,6 +28,7 @@ public:
 
     void add_task(std::function<void()> task);
     void wait_for_tasks();
+    int get_threads_working();
     bool has_tasks();
     void empty();
 
@@ -37,6 +38,7 @@ private:
     void wait_for_task();
 
     bool _stop_requested = false;
+    std::atomic<int> threads_working;
     std::mutex queue_mutex;
     std::condition_variable queue_cond;
     std::queue<std::function<void()>> queue;

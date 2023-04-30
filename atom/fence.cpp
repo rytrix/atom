@@ -10,7 +10,9 @@ fence::fence()
     :m_value(false)
 {}
 
-fence::~fence() = default;
+fence::~fence() {
+
+}
 
 fence::handle fence::dispatch() {
     std::unique_lock<std::mutex> lock(m_mutex);

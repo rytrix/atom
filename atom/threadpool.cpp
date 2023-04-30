@@ -2,14 +2,20 @@
 #define _ATOM_POOL_CPP
 
 #include "threadpool.hpp"
+#include <atomic>
+#include <thread>
 
 namespace atom {
 
 pool::pool() {
-    spawn_threads(std::thread::hardware_concurrency());
+    int thread_count = std::thread::hardware_concurrency();
+    threads_working = 0;
+    spawn_threads(thread_count);
+
 }
 
 pool::pool(uint32_t thread_count) {
+    threads_working = 0;
     spawn_threads(thread_count);
 }
 
@@ -51,9 +57,13 @@ void pool::add_task(std::function<void()> task) {
 }
 
 void pool::wait_for_tasks() {
-    while (has_tasks()) {
+    while (has_tasks() || get_threads_working() != 0) {
         std::this_thread::yield();
     }
+}
+
+int pool::get_threads_working() {
+    return threads_working.load(std::memory_order_acquire);
 }
 
 bool pool::has_tasks() {
@@ -81,7 +91,9 @@ void pool::wait_for_task() {
             queue.pop();
         }
         if (task) {
+            threads_working.fetch_add(1);
             task();
+            threads_working.fetch_sub(1);
         }
     }
 }

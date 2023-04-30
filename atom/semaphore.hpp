@@ -20,8 +20,10 @@ public:
 
     handle wait();
     handle wait(double seconds);
+    void wait_complete();
 
 private:
+    const int m_default;
     int m_value;
     std::mutex m_mutex;
     std::condition_variable m_cond;
