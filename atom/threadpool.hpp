@@ -3,21 +3,6 @@
 #ifndef _ATOM_POOL_HPP
 #define _ATOM_POOL_HPP
 
-
-
-#ifdef _DEBUG
-    #include <iostream> // debug std::cout
-#endif
-
-#include <thread>
-#include <vector>
-#include <queue>
-#include <functional>
-#include <mutex>
-#include <condition_variable>
-
-
-
 namespace atom {
 
 class pool {

@@ -3,9 +3,6 @@
 #ifndef _ATOM_FENCE_HPP
 #define _ATOM_FENCE_HPP
 
-#include <mutex>
-#include <condition_variable>
-
 namespace atom {
 
 class fence {

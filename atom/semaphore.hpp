@@ -3,9 +3,6 @@
 #ifndef _ATOM_SEMAPHORE_HPP
 #define _ATOM_SEMAPHORE_HPP
 
-#include <mutex>
-#include <condition_variable>
-
 namespace atom {
 
 class semaphore {

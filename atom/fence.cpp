@@ -2,7 +2,6 @@
 #define _ATOM_FENCE_CPP
 
 #include "fence.hpp"
-#include <mutex>
 
 namespace atom {
 
