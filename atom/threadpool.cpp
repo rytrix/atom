@@ -2,8 +2,6 @@
 #define _ATOM_POOL_CPP
 
 #include "threadpool.hpp"
-#include <atomic>
-#include <thread>
 
 namespace atom {
 
